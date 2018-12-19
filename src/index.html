@@ -11,34 +11,22 @@
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
+    <!-- Firebase App is always required and must be first -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-app.js"></script>
+
+    <!-- Add additional services that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-firestore.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-functions.js"></script> -->
+
+
+
   </head>
   <body>
     <app-root></app-root>
+    <script type="text/javascript" src="src/config.js"></script>
   </body>
-
-<!-- Firebase App is always required and must be first -->
-<script src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script>
-<script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-app.js"></script>
-
-<!-- Add additional services that you want to use -->
-<!-- <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-auth.js"></script> -->
-<script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-firestore.js"></script>
-<!-- <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-messaging.js"></script>
-<script src="https://www.gstatic.com/firebasejs/5.7.0/firebase-functions.js"></script> -->
-<script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyAbzg4dEXqsW80kDzzba5fBSTvO3OAm7z0",
-    authDomain: "ng-fitness-app-192c2.firebaseapp.com",
-    databaseURL: "https://ng-fitness-app-192c2.firebaseio.com",
-    projectId: "ng-fitness-app-192c2",
-    storageBucket: "ng-fitness-app-192c2.appspot.com",
-    messagingSenderId: "443264938561"
-  };
-  firebase.initializeApp(config);
-
-  window.dbRef = firebase.database();
-  window.firestore = firebase.firestore();
-</script>
 </html>

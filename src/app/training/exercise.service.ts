@@ -14,8 +14,6 @@ export class ExerciseService {
   private firestore;
 
   constructor() {
-    // set database ref
-    this.db = window[`dbRef`];
 
     // set firestore
     this.firestore = window[`firestore`];
@@ -25,29 +23,24 @@ export class ExerciseService {
   }
 
   public fetchAvailableExercises() {
-
+    const exerciseArray = [];
     this.firestore
       .collection('availableExercises')
-      .snapshotChanges()
-      .pipe(
-        map(docArray => {
-          return docArray.map(doc => {
-            return this.convertToExercise(doc.payload.doc);
-          });
-        })
-      )
-      .subscribe((exercises: Exercise[]) => {
-        this.availableExercises = exercises;
-        this.exercisesChanged.next([...this.availableExercises]);
+      .get()
+      .then((docArray) => {
+        docArray.forEach(doc => {
+          exerciseArray.push(this.convertToExercise(doc));
+        });
       });
+      this.availableExercises = exerciseArray;
+      this.exercisesChanged.next(this.availableExercises);
   }
 
   getPastExercises(): any {
-    this.db
+    this.firestore
       .collection('finishedExercises')
-      .valueChanges()
-      .subscribe((exercises: Exercise[]) => {
-        this.finishedExercisesChanged.next(exercises);
+      .onSnapshot((exercises) => {
+        this.finishedExercisesChanged.next(this.makePastExerciseArray(exercises.docs));
       });
   }
 
@@ -69,6 +62,7 @@ export class ExerciseService {
   }
 
   cancelExercise(progress: number) {
+    console.log(this.runningExercise);
     this.addDataToDatabase({
       ...this.runningExercise,
       duration: this.runningExercise.duration * (progress / 100),
@@ -94,6 +88,21 @@ export class ExerciseService {
   }
 
   private addDataToDatabase(exercise: Exercise) {
-    this.db.collection('finishedExercises').add(exercise);
+    this.firestore.collection('finishedExercises').add(exercise);
+  }
+
+  private makePastExerciseArray(docs) {
+    const arr = [];
+
+    docs.forEach(doc => {
+      const ex = doc.data();
+      const date = new Date();
+      date.setTime(ex.date.seconds * 1000);
+      ex[`date`] = date;
+
+      arr.push(ex);
+    });
+
+    return arr;
   }
 }
