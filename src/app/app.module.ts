@@ -19,7 +19,6 @@ import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.com
 import { StopTrainingComponent } from './training/current-training/stop-training.component';
 import { AuthService } from './auth/auth.service';
 import { ExerciseService } from './training/exercise.service';
-import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
