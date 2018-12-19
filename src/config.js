@@ -1,12 +1,12 @@
 // configs for firebase
 
 var config = {
-  apiKey: 'AIzaSyAbzg4dEXqsW80kDzzba5fBSTvO3OAm7z0',
-  authDomain: 'ng-fitness-app-192c2.firebaseapp.com',
-  databaseURL: 'https://ng-fitness-app-192c2.firebaseio.com',
-  projectId: 'ng-fitness-app-192c2',
-  storageBucket: 'ng-fitness-app-192c2.appspot.com',
-  messagingSenderId: '443264938561'
+  apiKey: '<your-key>',
+  authDomain: '<your-project-authdomain>',
+  databaseURL: '<your-database-URL>',
+  projectId: '<your-project-id>',
+  storageBucket: '<your-storage-bucket>',
+  messagingSenderId: '<your-messaging-sender-id>'
 };
 // Initialize Firebase
 firebase.initializeApp(config);
