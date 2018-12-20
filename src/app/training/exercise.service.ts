@@ -1,5 +1,5 @@
 import { Exercise } from './exercise.model';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 
@@ -10,11 +10,10 @@ export class ExerciseService {
   public finishedExercisesChanged = new Subject<Exercise[]>();
   private availableExercises: Exercise[] = [];
   private runningExercise: Exercise;
-  private db;
   private firestore;
+  private fbSubs;
 
   constructor() {
-
     // set firestore
     this.firestore = window[`firestore`];
     this.firestore.settings({
@@ -37,11 +36,15 @@ export class ExerciseService {
   }
 
   getPastExercises(): any {
-    this.firestore
+    this.fbSubs = this.firestore
       .collection('finishedExercises')
       .onSnapshot((exercises) => {
         this.finishedExercisesChanged.next(this.makePastExerciseArray(exercises.docs));
       });
+  }
+
+  public cancelSubscriptions() {
+    this.fbSubs();
   }
 
   public startExercise(exercise: string) {
@@ -105,4 +108,5 @@ export class ExerciseService {
 
     return arr;
   }
+
 }
