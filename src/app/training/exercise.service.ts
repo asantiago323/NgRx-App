@@ -13,7 +13,9 @@ export class ExerciseService {
   private firestore;
   private fbSubs;
 
-  constructor() {
+  constructor(
+
+  ) {
     // set firestore
     this.firestore = window[`firestore`];
     this.firestore.settings({
@@ -44,7 +46,9 @@ export class ExerciseService {
   }
 
   public cancelSubscriptions() {
-    this.fbSubs();
+    if (this.fbSubs) {
+      this.fbSubs();
+    }
   }
 
   public startExercise(exercise: string) {
@@ -57,7 +61,7 @@ export class ExerciseService {
   completeExercise() {
     this.addDataToDatabase({
       ...this.runningExercise,
-      date: new Date(),
+      date: new Date().toDateString(),
       state: 'completed'
     });
     this.runningExercise = null;
@@ -65,12 +69,11 @@ export class ExerciseService {
   }
 
   cancelExercise(progress: number) {
-    console.log(this.runningExercise);
     this.addDataToDatabase({
       ...this.runningExercise,
       duration: this.runningExercise.duration * (progress / 100),
       calories: this.runningExercise.calories * (progress / 100),
-      date: new Date(),
+      date: new Date().toDateString(),
       state: 'cancelled'
     });
     this.runningExercise = null;
@@ -94,16 +97,11 @@ export class ExerciseService {
     this.firestore.collection('finishedExercises').add(exercise);
   }
 
-  private makePastExerciseArray(docs) {
+  private makePastExerciseArray(docs): Exercise[] {
     const arr = [];
 
     docs.forEach(doc => {
-      const ex = doc.data();
-      const date = new Date();
-      date.setTime(ex.date.seconds * 1000);
-      ex[`date`] = date;
-
-      arr.push(ex);
+      arr.push(doc.data());
     });
 
     return arr;
