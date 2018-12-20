@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule } from '@angular/core';
 import {
   MatButtonModule,
   MatIconModule,
@@ -17,8 +17,9 @@ import {
   MatDialogModule,
   MatTableModule,
   MatSortModule,
-  MatPaginatorModule
-} from "@angular/material";
+  MatPaginatorModule,
+  MatSnackBarModule
+} from '@angular/material';
 
 const mats = [
   MatButtonModule,
@@ -38,7 +39,8 @@ const mats = [
   MatDialogModule,
   MatTableModule,
   MatSortModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatSnackBarModule
 ];
 
 @NgModule({
