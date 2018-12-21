@@ -3,6 +3,7 @@ import { Subject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
+import { UIService } from '../shared/ui.service';
 
 @Injectable()
 export class ExerciseService {
@@ -13,9 +14,10 @@ export class ExerciseService {
   private runningExercise: Exercise;
   private fbSubs: Subscription[] = [];
 
-  constructor(private db: AngularFirestore) {}
+  constructor(private db: AngularFirestore, private uiService: UIService) {}
 
   public fetchAvailableExercises() {
+    this.uiService.loadingStateChanges.next(true);
     this.fbSubs.push(
       this.db
         .collection('availableExercises')
@@ -27,21 +29,45 @@ export class ExerciseService {
             });
           })
         )
-        .subscribe((exercises: Exercise[]) => {
-          this.availableExercises = exercises;
-          this.exercisesChanged.next([...this.availableExercises]);
-        })
+        .subscribe(
+          (exercises: Exercise[]) => {
+            this.uiService.loadingStateChanges.next(false);
+            this.availableExercises = exercises;
+            this.exercisesChanged.next([...this.availableExercises]);
+          },
+          error => {
+            this.uiService.loadingStateChanges.next(false);
+            this.uiService.showSnackbar(
+              'Unable to fetch exercises',
+              null,
+              3000
+            );
+            this.exercisesChanged.next(null);
+          }
+        )
     );
   }
 
   getPastExercises(): any {
+    this.uiService.loadingStateChanges.next(true);
     this.fbSubs.push(
       this.db
         .collection('finishedExercises')
         .valueChanges()
-        .subscribe((exercises: Exercise[]) => {
-          this.finishedExercisesChanged.next(exercises);
-        })
+        .subscribe(
+          (exercises: Exercise[]) => {
+            this.uiService.loadingStateChanges.next(false);
+            this.finishedExercisesChanged.next(exercises);
+          },
+          error => {
+            this.uiService.loadingStateChanges.next(false);
+            this.uiService.showSnackbar(
+              'Unable to fetch exercises',
+              null,
+              3000
+            );
+          }
+        )
     );
   }
 
@@ -53,7 +79,9 @@ export class ExerciseService {
   }
 
   public cancelSubscriptions() {
-    this.fbSubs.forEach(sub => sub.unsubscribe());
+    if (this.fbSubs) {
+      this.fbSubs.forEach(sub => sub.unsubscribe());
+    }
   }
 
   completeExercise() {

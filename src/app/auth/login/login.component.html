@@ -27,6 +27,7 @@
       <mat-error>Password Required</mat-error>
     </mat-form-field>
     <button
+      *ngIf="!(isLoading$ | async)"
       [disabled]="loginForm.invalid"
       mat-raised-button
       type="submit"
@@ -34,5 +35,6 @@
     >
       Submit
     </button>
+    <mat-spinner *ngIf="(isLoading$ | async)"></mat-spinner>
   </form>
 </section>
