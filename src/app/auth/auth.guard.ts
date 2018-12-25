@@ -1,20 +1,39 @@
 import {
   CanActivate,
+  CanLoad,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
-  Router
-} from "@angular/router";
-import { Injectable } from "@angular/core";
-import { AuthService } from "./auth.service";
+  Router,
+  Route
+} from '@angular/router';
+import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+import * as fromRoot from '../app.reducer';
+import { take } from 'rxjs/operators';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+export class AuthGuard implements CanActivate, CanLoad {
+  constructor(private router: Router, private store: Store<fromRoot.State>) {}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.authService.isAuth()) {
-      return true;
+    const allowed = this.store
+      .select(fromRoot.getIsAuthenticated)
+      .pipe(take(1));
+    if (allowed) {
+      return allowed;
     } else {
-      this.router.navigate(["/login"]);
+      this.router.navigate(['/login']);
+    }
+  }
+
+  canLoad(route: Route) {
+    const allowed = this.store
+      .select(fromRoot.getIsAuthenticated)
+      .pipe(take(1));
+    if (allowed) {
+      return allowed;
+    } else {
+      this.router.navigate(['/login']);
     }
   }
 }
