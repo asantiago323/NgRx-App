@@ -2,6 +2,11 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.1.3.
 
+## Environment Setup
+
+Ensure that you connect to your firestore db within the environment.ts file.
+Here is a link to a finished copy [Fitness Tracker](https://ng-fitness-app-192c2.firebaseapp.com)
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
