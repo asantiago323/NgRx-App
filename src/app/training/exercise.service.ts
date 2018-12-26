@@ -1,13 +1,13 @@
-import { Exercise } from './exercise.model';
-import { Subscription } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { Injectable } from '@angular/core';
-import { UIService } from '../shared/ui.service';
-import * as UI from '../shared/ui.actions';
-import * as Training from './training.actions';
-import * as fromTraining from './training.reducer';
-import { Store } from '@ngrx/store';
+import { Exercise } from "./exercise.model";
+import { Subscription } from "rxjs";
+import { map, take } from "rxjs/operators";
+import { AngularFirestore } from "@angular/fire/firestore";
+import { Injectable } from "@angular/core";
+import { UIService } from "../shared/ui.service";
+import * as UI from "../shared/ui.actions";
+import * as Training from "./training.actions";
+import * as fromTraining from "./training.reducer";
+import { Store } from "@ngrx/store";
 
 @Injectable()
 export class ExerciseService {
@@ -23,7 +23,7 @@ export class ExerciseService {
     this.store.dispatch(new UI.StartLoading());
     this.fbSubs.push(
       this.db
-        .collection('availableExercises')
+        .collection("availableExercises")
         .snapshotChanges()
         .pipe(
           map(docArray => {
@@ -40,7 +40,7 @@ export class ExerciseService {
           error => {
             this.store.dispatch(new UI.StopLoading());
             this.uiService.showSnackbar(
-              'Unable to fetch exercises',
+              "Unable to fetch exercises",
               null,
               3000
             );
@@ -54,7 +54,7 @@ export class ExerciseService {
     this.store.dispatch(new UI.StartLoading());
     this.fbSubs.push(
       this.db
-        .collection('finishedExercises')
+        .collection("finishedExercises")
         .valueChanges()
         .subscribe(
           (exercises: Exercise[]) => {
@@ -64,7 +64,7 @@ export class ExerciseService {
           error => {
             this.store.dispatch(new UI.StopLoading());
             this.uiService.showSnackbar(
-              'Unable to fetch exercises',
+              "Unable to fetch exercises",
               null,
               3000
             );
@@ -88,13 +88,13 @@ export class ExerciseService {
       .select(fromTraining.getActiveExercise)
       .pipe(take(1))
       .subscribe(ex => {
-        const exe = Object.assign({}, ex);
+        const exe: Exercise = this.makeObject(ex);
         console.log(exe);
-        // this.addDataToDatabase({
-        //   ...exe,
-        //   date: new Date().toDateString(),
-        //   state: 'completed'
-        // });
+        this.addDataToDatabase({
+          ...exe,
+          date: new Date().toDateString(),
+          state: "completed"
+        });
       });
     this.store.dispatch(new Training.StopTraining());
   }
@@ -104,14 +104,14 @@ export class ExerciseService {
       .select(fromTraining.getActiveExercise)
       .pipe(take(1))
       .subscribe(ex => {
-        console.log(ex);
-        // this.addDataToDatabase({
-        //   ...ex,
-        //   duration: ex[`duration`] * (progress / 100),
-        //   calories: ex[`calories`] * (progress / 100),
-        //   date: new Date().toDateString(),
-        //   state: 'cancelled'
-        // });
+        const exe: Exercise = this.makeObject(ex);
+        this.addDataToDatabase({
+          ...exe,
+          duration: ex[`duration`] * (progress / 100),
+          calories: ex[`calories`] * (progress / 100),
+          date: new Date().toDateString(),
+          state: "cancelled"
+        });
       });
     this.store.dispatch(new Training.StopTraining());
   }
@@ -125,7 +125,16 @@ export class ExerciseService {
     };
   }
 
+  private makeObject(exe) {
+    return {
+      id: exe.id,
+      name: exe.name,
+      duration: exe.duration,
+      calories: exe.calories
+    };
+  }
+
   private addDataToDatabase(exercise: Exercise) {
-    this.db.collection('finishedExercises').add(exercise);
+    this.db.collection("finishedExercises").add(exercise);
   }
 }
